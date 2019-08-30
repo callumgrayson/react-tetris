@@ -15,6 +15,7 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
+import Controls from './Controls';
 
 const Tetris = () => {
 	const [ dropTime, setDropTime ] = useState(null);
@@ -25,6 +26,9 @@ const Tetris = () => {
 	const [ score, setScore, rows, setRows, level, setLevel ] = useGameStatus(
 		rowsCleared
 	);
+
+	const mediaQuery =
+		'media only screen and (not(pointer)) and (not(hover)), (max-width: 600px), (max-device-width: 1024px)';
 
 	const movePlayer = (dir) => {
 		if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -89,6 +93,18 @@ const Tetris = () => {
 		}
 	};
 
+	const handleClick = (action) => {
+		const actions = {
+			drop: { keyCode: 40 },
+			left: { keyCode: 37 },
+			rotate: { keyCode: 38 },
+			right: { keyCode: 39 }
+		};
+
+		move(actions[action]);
+		keyUp(actions[action]);
+	};
+
 	useInterval(() => {
 		drop();
 	}, dropTime);
@@ -100,24 +116,45 @@ const Tetris = () => {
 			onKeyDown={(e) => move(e)}
 			onKeyUp={keyUp}
 		>
-			<StyledTetris>
-				<Stage stage={stage} />
+			<StyledTetris mediaQuery={mediaQuery}>
+				<Stage stage={stage} mediaQuery={mediaQuery} />
 				<aside>
 					{gameOver ? (
-						<Display
-							gameOver={gameOver}
-							text={`Game Over - Score: ${score}`}
-						/>
+						<div className="display-area">
+							<Display
+								text={`Game Over - Score: ${score}`}
+								mediaQuery={mediaQuery}
+							/>
+							<StartButton
+								className="start-button"
+								callback={startGame}
+								mediaQuery={mediaQuery}
+							/>
+						</div>
 					) : (
-						<div>
-							<Display text={`Score: ${score}`} />
-							<Display text={`Rows: ${rows}`} />
-							<Display text={`Level: ${level}`} />
+						<div className="display-area">
+							<Display
+								text={`Score: ${score}`}
+								mediaQuery={mediaQuery}
+							/>
+							<Display
+								text={`Rows: ${rows}`}
+								mediaQuery={mediaQuery}
+							/>
+							<Display
+								text={`Level: ${level}`}
+								mediaQuery={mediaQuery}
+							/>
+							<StartButton
+								className="start-button"
+								callback={startGame}
+								mediaQuery={mediaQuery}
+							/>
 						</div>
 					)}
-					<StartButton callback={startGame} />
 				</aside>
 			</StyledTetris>
+			<Controls clickHandler={handleClick} mediaQuery={mediaQuery} />
 		</StyledTetrisWrapper>
 	);
 };

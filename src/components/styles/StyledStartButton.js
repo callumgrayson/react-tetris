@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const StyledStartButton = styled.div`
 	box-sizing: border-box;
-	margin: 0 0 20px 0;
+	margin: 0 0 2vh 0;
 	padding: 20px;
 	min-height: 30px;
 	width: 100%;
@@ -17,5 +17,13 @@ export const StyledStartButton = styled.div`
 
 	&::selection {
 		background: transparent;
+	}
+
+	@${(props) => props.mediaQuery} {
+		width: 46%;
+		font-size: .8rem;
+		min-height: 15px;
+		font-size: minmax(3vmin, 14px);
+		margin: 1vh 2%;
 	}
 `;
